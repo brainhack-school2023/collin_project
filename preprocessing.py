@@ -26,7 +26,7 @@ def extract_myelin_map_and_prompts(axon_path, myelin_path, px_size):
     w = bboxes.iloc[:, -1] - bboxes.iloc[:, -3]
     h = bboxes.iloc[:, -2] - bboxes.iloc[:, -4]
     # collect axon centroids
-    centroids = morphometrics.iloc[:, 1:3]
+    centroids = morphometrics.iloc[:, :2]
 
     # create reduced dataframe
     width_heigth = pd.DataFrame({'width': w, 'heigth': h})
