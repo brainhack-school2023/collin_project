@@ -13,18 +13,42 @@ Hi! My name is Armand and I am a Master student in biomedical engineering at Neu
 
 ## Project Summary
 
-### Deliverables
-- `axondeepseg` PR[742](https://github.com/axondeepseg/axondeepseg/pull/742) adds a feature to save raw instance maps.
+### Introduction
+[GIVE CONTEXT]
+
+### Main Objectives
+[LIST OBJECTIVES]
+### Tools
+[LIST TOOLS]
+
+### Data
+The data used for this project is the `data_axondeepseg_tem` dataset privately hosted on an internal server with git-annex. It was used to train [this model](https://github.com/axondeepseg/default-TEM-model). It's also our biggest annotated dataset for myelin segmentation (20 subjects, 1360 MPx of manually segmented images).
+
+### Project deliverables
+1. `axondeepseg` PR[742](https://github.com/axondeepseg/axondeepseg/pull/742) adds a feature to save raw instance maps.
 With this feature, we can take a semantic segmentation and turn it into a raw 16bit PNG format where all axons are individually labelled. Below, we can see an example of an input semantic segmentation and its associated colorized instance segmentation. This allows us to subdivide the segmentation mask into its individual components.
 
 | Semantic seg | Instance seg |
 |:-:|:-:|
 | <img src="https://github.com/brainhack-school2023/collin_project/assets/83031821/d09274af-b062-43c3-815f-a45850e5ef3a"> | <img src="https://github.com/brainhack-school2023/collin_project/assets/83031821/fc04f880-737a-43f4-a5b9-2a764c9f9434"  > |
 
-- Preprocessing script (located in `scripts/preprocessing.py`) which allows us to take the myelin segmentation and the instance map and extract the myelin map and the bbox/centroid information that we will feed to SAM as input prompts. Below, we can see a QC visualization of the output. This preprocessing script takes as input a BIDS dataset and outputs a BIDS-compatible derivatives folder.
+
+2. Preprocessing script (located in `scripts/preprocessing.py`) which allows us to take the myelin segmentation and the instance map and extract the myelin map and the bbox/centroid information that we will feed to SAM as input prompts. Below, we can see a QC visualization of the output. This preprocessing script takes as input a BIDS dataset and outputs a BIDS-compatible derivatives folder.
 
 ![sub-nyuMouse07_sample-0007_qc](https://github.com/brainhack-school2023/collin_project/assets/83031821/7e5cf53f-b6f5-4cf6-bf9f-db33a9373edf)
 
 
-### Data
-The data used for this project is the `data_axondeepseg_tem` dataset privately hosted on an internal server with git-annex. It was used to train [this model](https://github.com/axondeepseg/default-TEM-model). It's also our biggest annotated dataset for myelin segmentation (20 subjects, 1360 MPx of manually segmented images).
+## Results
+[...]
+
+## Conclusions
+[...]
+
+## How to reproduce
+### 1. Get the data and preprocess the annotations
+[...]
+
+### 2. Precompute the image embeddings
+[...]
+
+### 3. Run the finetuning
