@@ -11,6 +11,10 @@ import json
 from pathlib import Path
 
 def extract_myelin_map_and_prompts(axon_path, myelin_path, px_size):
+    '''
+    Main preprocessing function. It returns the myelin map with all individual 
+    myelin masks and their associated bbox/centroid to feed to SAM as prompts.
+    '''
     axon_mask = ads_utils.imread(axon_path)
     myelin_mask = ads_utils.imread(myelin_path)
     morph_output = get_axon_morphometrics(
@@ -78,12 +82,14 @@ def save_bbox_img(myelin_img, prompts_df, index_im, fname):
     rgbimg.paste(index_im, mask=index_im)
     rgbimg.save(fname)
 
-def preprocess_bids_dataset(datapath):
+def index_bids_dataset(datapath):
     '''
-    Apply the preprocessing steps to all images of an arbitrary BIDS dataset.
-    This will create a new derivatives folder for the myelin maps.
+    Index an arbitrary BIDS dataset and return a data dictionary containing all images, 
+    segmentations and pixel sizes.
     '''
     datapath = Path(datapath)
+
+    # init data_dict by reading 'samples.tsv'
     samples = pd.read_csv(datapath / 'samples.tsv', delimiter='\t')
     data_dict = {}
     for i, row in samples.iterrows():
@@ -120,3 +126,5 @@ def preprocess_bids_dataset(datapath):
             sidecar = json.load(f)
         data_dict[subject]['px_size'] = sidecar["PixelSize"][0]
     print(f'{sample_count} samples collected.')
+
+    return data_dict
