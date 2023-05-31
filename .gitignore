@@ -3,3 +3,4 @@ __pycache__
 axondeepseg.log
 derivatives/
 *.pth
+sub-nyuMouse*_TEM.png
