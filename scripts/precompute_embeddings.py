@@ -59,7 +59,7 @@ def main(datapath, outpath=None):
             image = cv2.imread(data_dict[sub][sample]['image'])
             # this will pass the image through the vision encoder
             predictor.set_image(image)
-            emb_fname = samples_path / f'{sub}_{sample}_embedding.pt'
+            emb_fname = samples_path / f'{sub}_{sample}_TEM_embedding.pt'
             predictor.save_image_embedding(emb_fname)
 
 
