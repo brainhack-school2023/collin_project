@@ -37,25 +37,14 @@ def extract_myelin_map_and_prompts(axon_path, myelin_path, px_size):
 
     # collect bbox info
     bboxes = morphometrics.iloc[:, -4:]
-    min_x, min_y = bboxes.iloc[:, -3], bboxes.iloc[:, -4]
-    w = bboxes.iloc[:, -1] - bboxes.iloc[:, -3]
-    h = bboxes.iloc[:, -2] - bboxes.iloc[:, -4]
     # collect axon centroids
     centroids = morphometrics.iloc[:, :2]
 
     # create reduced dataframe
-    width_heigth = pd.DataFrame({'width': w, 'heigth': h})
-    prompts_df = pd.concat([centroids.astype('int64'), bboxes, width_heigth], axis=1)
-    prompts_df.rename(
-        columns={
-            'bbox_min_y': 'min_y', 
-            'bbox_min_x': 'min_x',
-            'x0 (px)': 'x0',
-            'y0 (px)': 'y0',
-        }, 
-        inplace=True
-    )
-    prompts_df.drop(columns=['bbox_max_y', 'bbox_max_x'], inplace=True)
+    prompts_df = pd.concat([centroids.astype('int64'), bboxes], axis=1)
+    prompts_df.rename(columns={'x0 (px)': 'x0', 'y0 (px)': 'y0'}, inplace=True)
+    col_order = ['x0', 'y0', 'bbox_min_x', 'bbox_min_y', 'bbox_max_x', 'bbox_max_y']
+    prompts_df = prompts_df.reindex(columns=col_order)
 
     return index_im, myelin_map, myelin_im, prompts_df
 
@@ -77,10 +66,10 @@ def save_bbox_img(myelin_img, prompts_df, index_im, fname):
         # Create a rectangle around axon #i
         draw.rectangle(
             [
-                prompts_df.iloc[i, 3], 
-                prompts_df.iloc[i, 2],
-                prompts_df.iloc[i, 3] + prompts_df.iloc[i, -2],
-                prompts_df.iloc[i, 2] + prompts_df.iloc[i, -1],
+                prompts_df.iloc[i, 2], 
+                prompts_df.iloc[i, 3],
+                prompts_df.iloc[i, 4],
+                prompts_df.iloc[i, 5],
             ],
             outline='red',
             width=2
