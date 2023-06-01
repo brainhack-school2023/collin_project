@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[11]:
+# In[1]:
 
 
 from pathlib import Path
@@ -107,12 +107,13 @@ optimizer = torch.optim.Adam(sam_model.mask_decoder.parameters(), lr=lr, weight_
 loss_fn = torch.nn.MSELoss()
 
 
-# In[9]:
+# In[15]:
 
 
 from torch.nn.functional import threshold, normalize
 
 num_epochs = 40
+batch_size = 10
 losses = []
 transform = ResizeLongestSide(sam_model.image_encoder.img_size)
 
@@ -127,17 +128,21 @@ for epoch in range(num_epochs):
         original_size = emb_dict['original_size']
         input_size = emb_dict['input_size']
         image_embedding = emb_dict['features']
-
-        # figure to plot all predictions
-#         plt.figure(figsize=(10, 10))
-
+        
+        if 'sub-nyuMouse28_sample-0006' in str(emb_path):
+            # figure to plot all predictions
+            plt.figure(figsize=(10, 10))
+        
         # train on every axon in the image
         for axon_id in range(len(bboxes)):
             # get mask and bbox prompt
             prompt = get_myelin_bbox(bboxes, axon_id)
             gt_mask = get_myelin_mask(myelin_map, axon_id)
-            if np.count_nonzero(gt_mask) == 0:
+            
+            # empty masks should not be processed
+            if np.isnan(prompt).any():
                 continue
+                
             # no grad for the prompt encoder
             with torch.no_grad():
                 box = transform.apply_boxes(prompt, original_size)
@@ -164,8 +169,6 @@ for epoch in range(num_epochs):
                 original_size,
             ).to(device)
             binary_mask = normalize(threshold(upscaled_mask, 0.0, 0))
-#             print(torch.isnan(box_torch.cpu()).any())
-#             print(np.count_nonzero(gt_mask))
             
             gt_mask_resized = torch.from_numpy(
                 np.resize(gt_mask, (1, 1, gt_mask.shape[0], gt_mask.shape[1]))
@@ -177,27 +180,33 @@ for epoch in range(num_epochs):
             loss.backward()
             optimizer.step()
             epoch_losses.append(loss.item())
-#             show_mask(binary_mask.cpu().detach().numpy().squeeze(), plt.gca())
-#         print('Done with 1 sample.')
+            if 'sub-nyuMouse28_sample-0006' in str(emb_path):
+                show_mask(binary_mask.cpu().detach().numpy().squeeze(), plt.gca())
         pbar.update(1)
         # print last 5 losses
-        tqdm.write(str(emb_path))
-        tqdm.write(str(np.mean(epoch_losses[-5:])))
-
-#         plt.axis('off')
-#         plt.savefig(f'{emb_path.stem}_TEST_PRED.png')
-#         plt.close()
+#         tqdm.write(str(epoch_losses[-5:]))
+        # show prediction halfway in the epoch
+        if 'sub-nyuMouse28_sample-0006' in str(emb_path):
+            plt.axis('off')
+            plt.savefig(f'predictions_epoch_{epoch}')
     losses.append(epoch_losses)
     print(f'EPOCH {epoch} MEAN LOSS: {np.mean(epoch_losses)}')
-    print(f'EPOCH {epoch} MEAN LOSS: {np.nanmean(epoch_losses)}')
     if epoch % 5 == 0:
         torch.save(sam_model.state_dict(), f'../../scripts/sam_vit_b_01ec64_epoch_{epoch}.pth')
     
 torch.save(sam_model.state_dict(), '../../scripts/sam_vit_b_01ec64_finetuned.pth')
 
 
-# In[ ]:
+# In[16]:
 
 
-torch.save(sam_model.state_dict(), '../../scripts/sam_vit_b_01ec64_after3epochs.pth')
+mean_losses = [np.mean(x) for x in losses]
+mean_losses
+
+plt.plot(list(range(len(mean_losses))), mean_losses)
+plt.title('Mean epoch loss')
+plt.xlabel('Epoch Number')
+plt.ylabel('Loss')
+
+plt.savefig('losses.png')
 

@@ -5,3 +5,4 @@ derivatives/
 *.pth
 sub-nyuMouse*_TEM.png
 data_axondeepseg_tem
+notebook/training/*.png
