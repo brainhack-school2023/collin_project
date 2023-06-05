@@ -102,7 +102,7 @@ def load_image_embedding(path):
 # In[ ]:
 
 
-lr = 1e-5
+lr = 1e-7
 wd = 0
 optimizer = torch.optim.Adam(sam_model.mask_decoder.parameters(), lr=lr, weight_decay=wd)
 
