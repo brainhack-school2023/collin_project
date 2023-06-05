@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 from pathlib import Path
@@ -21,7 +21,7 @@ from segment_anything import SamPredictor, sam_model_registry
 from segment_anything.utils.transforms import ResizeLongestSide
 
 
-# In[2]:
+# In[ ]:
 
 
 datapath = Path('../../data_axondeepseg_tem/')
@@ -33,10 +33,11 @@ data_dict = bids_utils.index_bids_dataset(datapath)
 data_dict
 
 
-# In[3]:
+# In[ ]:
 
 
 # utility functions to read prompts and labels
+# %matplotlib inline
 def get_sample_bboxes(subject, sample, maps_path):
     prompts_fname = maps_path / subject / 'micr' / f'{subject}_{sample}_prompts.csv'
     prompts_df = pd.read_csv(prompts_fname)
@@ -65,7 +66,7 @@ def show_box(box, ax):
     ax.add_patch(plt.Rectangle((x0, y0), w, h, edgecolor='green', facecolor=(0,0,0,0), lw=2))  
 
 
-# In[4]:
+# In[ ]:
 
 
 # data loader providing the myelin map (masks), the bboxes (prompts) 
@@ -82,7 +83,7 @@ def bids_dataloader(data_dict, maps_path, embeddings_path):
             yield (emb_path, bboxes, myelin_map)
 
 
-# In[5]:
+# In[ ]:
 
 
 model_type = 'vit_b'
@@ -98,7 +99,7 @@ def load_image_embedding(path):
     return emb_dict
 
 
-# In[6]:
+# In[ ]:
 
 
 lr = 1e-5
@@ -172,9 +173,7 @@ for epoch in range(num_epochs):
             ).to(device)
             binary_mask = normalize(threshold(upscaled_mask, 0.0, 0))
             
-            gt_mask_resized = torch.from_numpy(
-                np.resize(gt_mask, (1, 1, gt_mask.shape[0], gt_mask.shape[1]))
-            ).to(device)
+            gt_mask_resized = torch.from_numpy(gt_mask[:,:,0]).unsqueeze(0).unsqueeze(0).to(device)
             gt_binary_mask = torch.as_tensor(gt_mask_resized > 0, dtype=torch.float32)
             
             loss = loss_fn(binary_mask, gt_binary_mask)
@@ -186,9 +185,6 @@ for epoch in range(num_epochs):
             if 'sub-nyuMouse28_sample-0006' in str(emb_path):
                 show_mask(binary_mask.cpu().detach().numpy().squeeze(), plt.gca())
         pbar.update(1)
-        # print last 5 losses
-#         tqdm.write(str(epoch_losses[-5:]))
-        # show prediction halfway in the epoch
         if 'sub-nyuMouse28_sample-0006' in str(emb_path):
             plt.axis('off')
             plt.savefig(f'predictions_epoch_{epoch}')
