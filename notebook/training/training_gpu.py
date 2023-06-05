@@ -12,6 +12,7 @@ import torch
 import pandas as pd
 from collections import defaultdict
 from tqdm import tqdm
+import monai
 
 import sys
 sys.path.append('../../scripts')
@@ -104,10 +105,11 @@ lr = 1e-5
 wd = 0
 optimizer = torch.optim.Adam(sam_model.mask_decoder.parameters(), lr=lr, weight_decay=wd)
 
-loss_fn = torch.nn.MSELoss()
+# loss_fn = torch.nn.MSELoss()
+loss_fn = monai.losses.DiceLoss()
 
 
-# In[15]:
+# In[ ]:
 
 
 from torch.nn.functional import threshold, normalize
@@ -180,6 +182,7 @@ for epoch in range(num_epochs):
             loss.backward()
             optimizer.step()
             epoch_losses.append(loss.item())
+            
             if 'sub-nyuMouse28_sample-0006' in str(emb_path):
                 show_mask(binary_mask.cpu().detach().numpy().squeeze(), plt.gca())
         pbar.update(1)
@@ -192,12 +195,12 @@ for epoch in range(num_epochs):
     losses.append(epoch_losses)
     print(f'EPOCH {epoch} MEAN LOSS: {np.mean(epoch_losses)}')
     if epoch % 5 == 0:
-        torch.save(sam_model.state_dict(), f'../../scripts/sam_vit_b_01ec64_epoch_{epoch}.pth')
+        torch.save(sam_model.state_dict(), f'../../scripts/sam_vit_b_01ec64_epoch_{epoch}_diceloss.pth')
     
-torch.save(sam_model.state_dict(), '../../scripts/sam_vit_b_01ec64_finetuned.pth')
+torch.save(sam_model.state_dict(), '../../scripts/sam_vit_b_01ec64_finetuned_diceloss.pth')
 
 
-# In[16]:
+# In[ ]:
 
 
 mean_losses = [np.mean(x) for x in losses]
@@ -208,5 +211,5 @@ plt.title('Mean epoch loss')
 plt.xlabel('Epoch Number')
 plt.ylabel('Loss')
 
-plt.savefig('losses.png')
+plt.savefig('losses_with_diceloss.png')
 
