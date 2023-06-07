@@ -19,7 +19,32 @@ Finally, to obtain the prompts and preprocess the myelin segmentation, run the p
 ```
 python preprocessing.py -d path/to/dataset
 ```
+This will output a BIDS derivative folder.
 
 ## Pre-computing the image embeddings
+For the following 2 steps, we will work in another virtual environment. We will need the `segment-anything` dependency. Create a virtual environment and install SAM and its dependencies:
+```
+pip install git+https://github.com/facebookresearch/segment-anything.git
+pip install opencv-python pycocotools matplotlib onnxruntime onnx
+```
+
+You will also need a model checkpoint. For this project, we worked with the smallest available model (ViT-B).
+```
+wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
+```
+Finally, run the embedding computation script by providing the path to the dataset:
+```
+python precompute_embeddings.py -d path/to/dataset
+```
+This will output a BIDS derivative folder.
 
 ## Training the model
+In the same virtual environment as the one used in the previous step, install the following dependency (used for the loss function)
+```
+pip install monai
+```
+Then, you can run the training script:
+```
+python training_gpu.py
+```
+Note that you may need to change the GPU device and some harcoded paths in the `training_gpu.py` script. Training for 40 epochs on a RTX A6000 (2020), this took around 8 hours. This script will output model checkpoints every 5 epochs and predictions at every epoch to monitor progress.
