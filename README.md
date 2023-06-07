@@ -63,7 +63,7 @@ With this feature, we can take a semantic segmentation and turn it into a raw 16
 To download the source dataset, see the **How to reproduce** section below. The prompts (bounding boxes and centroids) and pre-computed image embeddings are available as release assets of this project. Technically, the source dataset with the raw images and labels is not needed and the fine-tuning can be done using only the derivatives included here.
 
 ### Segmentation results and model checkpoint
-Below, we can see a comparison between the output of SAM before and after the fine-tuning. As we can see, this method works very well. Most of the myelin objects are perfectly segmented.
+Below, we can see a comparison between the output of SAM before and after the fine-tuning. This segmentation was performed on an image held out from the training set. As we can see, this method works very well. Most of the myelin objects are perfectly segmented.
 
 | Before fine-tuning | After fine-tuning |
 |:-:|:-:|
@@ -72,7 +72,21 @@ Below, we can see a comparison between the output of SAM before and after the fi
 The final checkpoint of the fine-tuned model is also available as a release asset of this project (see `sam_vit_b_01ec64_finetuned_diceloss.pth`).
 
 ## Conclusions
-[...]
+### Can we leverage a foundation model for segmentation of histology images
+The answer is defintely yes. The results obtained with this project are very promising and could lead to a major improvement compared to our current models. The most impressive part about this method is that almost no hyperparameter tuning was involved: the training converged easily out-of-the-box. Obviously, optimizing hyperparameters will produce a better model, but the time constraint on this project did not allow to investigate this further. The reason why this is impressive is that usually, training a UNet from scratch and optimizing its performance is an involved process and requires Deep Learning expertise, whereas here, SAM is powerful enough to alleviate this challeging procedure.
+
+### What I learned
+- Familiarity with SAM architecture and codebase
+- Managing and planning a reproducible project from scratch
+- MRI basics from the Week 2 modules
+
+### Future steps
+- I would be curious to see how far we can push the model performance by tuning some hyperparameters
+- Fine-tuning SAM on our other histology datasets
+- Comparing this method against the segmentation models currently used by `axondeepseg`
+- Try to fine-tune a general-purpose myelin segmentation model that works across modalities/resolutions
+- If the segmentation results are better or very competitive to our current baseline, experiment with object detection methods to automatically generate the bounding boxes
+- Eventually add this/these models to `axondeepseg` to replace our older models and to make the method available to any user
 
 ## How to reproduce
 For a complete guide to reproduce these results, please see the README in the `scripts` folder.
