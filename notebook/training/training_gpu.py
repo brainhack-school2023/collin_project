@@ -102,12 +102,12 @@ def load_image_embedding(path):
 # In[ ]:
 
 
-lr = 1e-7
-wd = 0
-optimizer = torch.optim.Adam(sam_model.mask_decoder.parameters(), lr=lr, weight_decay=wd)
+lr = 1e-6
+wd = 0.01
+optimizer = torch.optim.AdamW(sam_model.mask_decoder.parameters(), lr=lr, weight_decay=wd)
 
 # loss_fn = torch.nn.MSELoss()
-loss_fn = monai.losses.DiceLoss()
+loss_fn = monai.losses.DiceLoss(sigmoid=True)
 
 
 # In[ ]:
@@ -124,7 +124,7 @@ for epoch in range(num_epochs):
     epoch_losses = []
     data_loader = bids_dataloader(data_dict, maps_path, embeddings_path)
     
-    pbar = tqdm(total=158)
+    pbar = tqdm(total=150)
     for sample in data_loader:
         emb_path, bboxes, myelin_map = sample
         emb_dict = load_image_embedding(emb_path)
@@ -158,7 +158,7 @@ for epoch in range(num_epochs):
                     masks=None,
                 )
             # now we pass the image and prompt embeddings in the mask decoder
-            low_res_mask, iou_predictions = sam_model.mask_decoder(
+            low_res_mask, _ = sam_model.mask_decoder(
                 image_embeddings=image_embedding,
                 image_pe=sam_model.prompt_encoder.get_dense_pe(),
                 sparse_prompt_embeddings=sparse_embeddings,
@@ -171,23 +171,29 @@ for epoch in range(num_epochs):
                 input_size,
                 original_size,
             ).to(device)
-            binary_mask = normalize(threshold(upscaled_mask, 0.0, 0))
+#             binary_mask = normalize(threshold(upscaled_mask, 0.0, 0))
             
             gt_mask_resized = torch.from_numpy(gt_mask[:,:,0]).unsqueeze(0).unsqueeze(0).to(device)
             gt_binary_mask = torch.as_tensor(gt_mask_resized > 0, dtype=torch.float32)
             
-            loss = loss_fn(binary_mask, gt_binary_mask)
-            optimizer.zero_grad()
+            loss = loss_fn(upscaled_mask, gt_binary_mask)
             loss.backward()
-            optimizer.step()
+            
             epoch_losses.append(loss.item())
+            pbar.set_description(f'Loss: {loss.item()}')
             
             if 'sub-nyuMouse28_sample-0006' in str(emb_path):
+                binary_mask = normalize(threshold(upscaled_mask, 0.0, 0))
                 show_mask(binary_mask.cpu().detach().numpy().squeeze(), plt.gca())
+        # optim step
+        optimizer.step()
+        optimizer.zero_grad()
+        
         pbar.update(1)
         if 'sub-nyuMouse28_sample-0006' in str(emb_path):
             plt.axis('off')
             plt.savefig(f'predictions_epoch_{epoch}')
+            plt.close()
     losses.append(epoch_losses)
     print(f'EPOCH {epoch} MEAN LOSS: {np.mean(epoch_losses)}')
     if epoch % 5 == 0:
