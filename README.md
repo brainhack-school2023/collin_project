@@ -10,7 +10,7 @@
 
 ### Introduction
 Histology (microscopy) data is widely used by neuropathologists to study demylienation in the nervous system.
-My project aims to leverage a general-purpose foundation model to segment myelin on histology images. Foundation models are large DL models trained on large-scale data. They learn a general representation that can be adapted to a variety of downstream tasks. OpenAI's GPT serie, for example, are examples of foundation models for NLP.
+My project aims to leverage a general-purpose foundation model to segment myelin on histology images. Foundation models are large DL models trained on large-scale data. They learn a general representation that can be adapted to a variety of downstream tasks. OpenAI's GPT serie, for example, are examples of foundation models for natural language processing.
 
 ### Main Objectives
 - Prepare a microscopy dataset to a format compatible with the Segment-Anything-Model
@@ -26,7 +26,7 @@ My project aims to leverage a general-purpose foundation model to segment myelin
 - GPU cluster for training (1X RTX A6000)
 
 ### Data
-The data used for this project is the `data_axondeepseg_tem` dataset privately hosted on an internal server with git-annex. It was used to train [this model](https://github.com/axondeepseg/default-TEM-model). It's also our biggest annotated dataset for myelin segmentation (20 subjects, 1360 MPx of manually segmented images).
+The data used for this project is the `data_axondeepseg_tem` dataset privately hosted on an internal server with git-annex. It was used to train [this model](https://github.com/axondeepseg/default-TEM-model). It's also our biggest annotated dataset for myelin segmentation (20 subjects, 1360 MPx of manually segmented images). An older version of this dataset is publicly available on this [OSF repository](https://osf.io/bj9eu/), under the `data/raw/` directory.
 
 ### Project deliverables
 1. `axondeepseg` PR [#742](https://github.com/axondeepseg/axondeepseg/pull/742) adds a feature to save raw instance maps.
