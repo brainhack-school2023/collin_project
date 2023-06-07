@@ -58,7 +58,18 @@ With this feature, we can take a semantic segmentation and turn it into a raw 16
 
 
 ## Results
-[...]
+
+### Fine-tuning dataset
+To download the source dataset, see the **How to reproduce** section below. The prompts (bounding boxes and centroids) and pre-computed image embeddings are available as release assets of this project. Technically, the source dataset with the raw images and labels is not needed and the fine-tuning can be done using only the derivatives included here.
+
+### Segmentation results and model checkpoint
+Below, we can see a comparison between the output of SAM before and after the fine-tuning. As we can see, this method works very well. Most of the myelin objects are perfectly segmented.
+
+| Before fine-tuning | After fine-tuning |
+|:-:|:-:|
+| <img src="https://github.com/brainhack-school2023/collin_project/blob/main/results/before_finetuning.png?raw=true"> | <img src="https://github.com/brainhack-school2023/collin_project/blob/main/results/after_finetuning.png?raw=true"  > |
+
+The final checkpoint of the fine-tuned model is also available as a release asset of this project (see `sam_vit_b_01ec64_finetuned_diceloss.pth`).
 
 ## Conclusions
 [...]
