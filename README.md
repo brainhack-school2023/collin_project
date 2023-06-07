@@ -23,13 +23,14 @@ My project aims to leverage a general-purpose foundation model to segment myelin
 - [SAM checkpoint](https://github.com/facebookresearch/segment-anything/tree/main) to fine-tune
 - Jupyter Notebook for prototyping
 - Main pythong packages: `torch`, `numpy`, `pandas`, `PIL`, `cv2`, `monai`
+- GPU cluster for training (1X RTX A6000)
 
 ### Data
 The data used for this project is the `data_axondeepseg_tem` dataset privately hosted on an internal server with git-annex. It was used to train [this model](https://github.com/axondeepseg/default-TEM-model). It's also our biggest annotated dataset for myelin segmentation (20 subjects, 1360 MPx of manually segmented images).
 
 ### Project deliverables
-1. `axondeepseg` PR[742](https://github.com/axondeepseg/axondeepseg/pull/742) adds a feature to save raw instance maps.
-With this feature, we can take a semantic segmentation and turn it into a raw 16bit PNG format where all axons are individually labelled. Below, we can see an example of an input semantic segmentation and its associated colorized instance segmentation. This allows us to subdivide the segmentation mask into its individual components.
+1. `axondeepseg` PR [#742](https://github.com/axondeepseg/axondeepseg/pull/742) adds a feature to save raw instance maps.
+With this feature, we can take a semantic segmentation and turn it into a raw 16bit PNG format where all axons are individually labelled. Below, we can see an example of an input semantic segmentation and its associated colorized instance segmentation. This allows us to subdivide the segmentation mask into its individual components. This PR will eventually be merged to the master branch.
 
 | Semantic seg | Instance seg |
 |:-:|:-:|
@@ -38,7 +39,22 @@ With this feature, we can take a semantic segmentation and turn it into a raw 16
 
 2. Preprocessing script (located in `scripts/preprocessing.py`) which allows us to take the myelin segmentation and the instance map and extract the myelin map and the bbox/centroid information that we will feed to SAM as input prompts. Below, we can see a QC visualization of the output. This preprocessing script takes as input a BIDS dataset and outputs a BIDS-compatible derivatives folder.
 
-![sub-nyuMouse07_sample-0007_qc](https://github.com/brainhack-school2023/collin_project/assets/83031821/7e5cf53f-b6f5-4cf6-bf9f-db33a9373edf)
+| Bounding boxes |
+|:-:|
+| <img src="https://github.com/brainhack-school2023/collin_project/assets/83031821/7e5cf53f-b6f5-4cf6-bf9f-db33a9373edf"  width="60%"> |
+
+3. Image embedding pre-computation script (located in `scrips/precompute_embeddings.py`) which will pre-compute the image embeddings. The reason we do this is that, as we can see below, the most intensive part of the forward pass is through the image encoder, a big vision transformer. Since we do not want to fine-tune this part of the model (only the mask decoder), we can greatly reduce training time by pre-computing the image embeddings and using them directly during the fine-tuning. This means that we never load the images during training.
+
+<div align="center">
+  
+| SAM architecture |
+|:-:|
+| <img src="https://learnopencv.com/wp-content/uploads/2023/04/segment-anything-pipeline.gif"> |
+
+</div>
+
+4. Training script (located in `scripts/training_gpu.py`). The model was fine-tuned for 40 epochs with the AdamW optimizer using the Dice loss. Gradient accumulation was also used because properly batching the input was not practical.
+5. A myelin segmentation! See section below for results.
 
 
 ## Results
