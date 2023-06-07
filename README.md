@@ -2,24 +2,26 @@
 ## Myelin segmentation on histology data using a foundation model
 
 ### About me
-<a href="https://github.com/hermancollin">
-   <img src="https://avatars.githubusercontent.com/u/83031821?v=4" width="100px;" alt=""/>
-   <br /><sub><b>Armand Collin</b></sub>
-</a>
-
-Hi! My name is Armand and I am a Master student in biomedical engineering at NeuroPoly (Polytechnique Montréal). I come from an electrical engineering background and my interests include Deep Learning for computer vision and software development. I work on [axondeepseg](https://github.com/axondeepseg/axondeepseg) with neurohistology data. Our software is used by researchers who study neurodegenerative diseases and want to investigate microstructural differences in the nervous system (to quantify demylienation for instance).
-
------
+| <a href="https://github.com/hermancollin"><img src="https://avatars.githubusercontent.com/u/83031821?v=4" width="100px;" alt=""/><br /><sub><b>Armand Collin</b></sub></a> | Hi! My name is Armand and I am a Master student in biomedical engineering at NeuroPoly (Polytechnique Montréal). I come from an electrical engineering background and my interests include Deep Learning for computer vision and software development. I work on [axondeepseg](https://github.com/axondeepseg/axondeepseg) with neurohistology data. |
+|-----------|:---------------|
 
 ## Project Summary
 
 ### Introduction
-[GIVE CONTEXT]
+Histology (microscopy) data is widely used by neuropathologists to study demylienation in the nervous system.
+My project aims to leverage a general-purpose foundation model to segment myelin on histology images. Foundation models are large DL models trained on large-scale data. They learn a general representation that can be adapted to a variety of downstream tasks. OpenAI's GPT serie, for example, are examples of foundation models for NLP.
 
 ### Main Objectives
-[LIST OBJECTIVES]
+- Prepare a microscopy dataset to a format compatible with the Segment-Anything-Model
+- Fine-tune the foundation model as a proof-of-concept
+
 ### Tools
-[LIST TOOLS]
+- `git`/`git-annex` for version control and data retrieval
+- BIDS standard
+- [axondeepseg](https://github.com/axondeepseg/axondeepseg) for data preprocessing
+- [SAM checkpoint](https://github.com/facebookresearch/segment-anything/tree/main) to fine-tune
+- Jupyter Notebook for prototyping
+- Main pythong packages: `torch`, `numpy`, `pandas`, `PIL`, `cv2`, `monai`
 
 ### Data
 The data used for this project is the `data_axondeepseg_tem` dataset privately hosted on an internal server with git-annex. It was used to train [this model](https://github.com/axondeepseg/default-TEM-model). It's also our biggest annotated dataset for myelin segmentation (20 subjects, 1360 MPx of manually segmented images).
