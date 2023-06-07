@@ -2,8 +2,9 @@
 ## Myelin segmentation on histology data using a foundation model
 
 ### About me
-| <a href="https://github.com/hermancollin"><img src="https://avatars.githubusercontent.com/u/83031821?v=4" width="100px;" alt=""/><br /><sub><b>Armand Collin</b></sub></a> | Hi! My name is Armand and I am a Master student in biomedical engineering at NeuroPoly (Polytechnique Montréal). I come from an electrical engineering background and my interests include Deep Learning for computer vision and software development. I work on [axondeepseg](https://github.com/axondeepseg/axondeepseg) with neurohistology data. |
+| <a href="https://github.com/hermancollin"><img src="https://scontent.fyhu1-1.fna.fbcdn.net/v/t1.18169-9/26907692_328382414314217_4507159261681077282_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=1JSb6jfqGx8AX90FK1z&_nc_ht=scontent.fyhu1-1.fna&oh=00_AfD7UBU5zGSbQIIrYIK6uLOM3IRqaReHp8fKRQHUYmH3EQ&oe=64A82817" width="400px;" alt=""/><br/><sub>Armand Collin</sub></a> | Hi! My name is Armand and I am a Master student in biomedical engineering at NeuroPoly (Polytechnique Montréal). I come from an electrical engineering background and my interests include Deep Learning for computer vision and software development. I work on [axondeepseg](https://github.com/axondeepseg/axondeepseg) with neurohistology data. |
 |-----------|:---------------|
+
 
 ## Project Summary
 
@@ -47,10 +48,4 @@ With this feature, we can take a semantic segmentation and turn it into a raw 16
 [...]
 
 ## How to reproduce
-### 1. Get the data and preprocess the annotations
-[...]
-
-### 2. Precompute the image embeddings
-[...]
-
-### 3. Run the finetuning
+For a complete guide to reproduce these results, please see the README in the `scripts` folder.
