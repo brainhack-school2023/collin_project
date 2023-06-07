@@ -26,7 +26,7 @@ My project aims to leverage a general-purpose foundation model to segment myelin
 - GPU cluster for training (1X RTX A6000)
 
 ### Data
-The data used for this project is the `data_axondeepseg_tem` dataset privately hosted on an internal server with git-annex. It was used to train [this model](https://github.com/axondeepseg/default-TEM-model). It's also our biggest annotated dataset for myelin segmentation (20 subjects, 1360 MPx of manually segmented images). An older version of this dataset is publicly available on this [OSF repository](https://osf.io/bj9eu/), under the `data/raw/` directory.
+The data used for this project is the `data_axondeepseg_tem` dataset privately hosted on an internal server with git-annex. It was used to train [this model](https://github.com/axondeepseg/default-TEM-model). It's also our biggest annotated dataset for myelin segmentation (20 subjects, 1360 MPx of manually segmented images). An older version of this dataset is publicly available on this [OSF repository](https://osf.io/bj9eu/), under the `data/raw/` directory. For more information on how to acces the data, see the *How to reproduce* section below.
 
 ### Project deliverables
 1. `axondeepseg` PR [#742](https://github.com/axondeepseg/axondeepseg/pull/742) adds a feature to save raw instance maps.
@@ -63,7 +63,7 @@ With this feature, we can take a semantic segmentation and turn it into a raw 16
 To download the source dataset, see the **How to reproduce** section below. The prompts (bounding boxes and centroids) and pre-computed image embeddings are available as release assets of this project. Technically, the source dataset with the raw images and labels is not needed and the fine-tuning can be done using only the derivatives included here.
 
 ### Segmentation results and model checkpoint
-Below, we can see a comparison between the output of SAM before and after the fine-tuning. This segmentation was performed on an image held out from the training set. As we can see, this method works very well. Most of the myelin objects are perfectly segmented. 
+Below, we can see a comparison between the output of SAM before and after the fine-tuning. This segmentation was performed on an image held out from the training set. As we can see, this method works very well. Most of the myelin objects are perfectly segmented. Note that these images were obtained using the notebook located in `notebook/training/compare_against_baseline.ipynb`.
 
 | Before fine-tuning | After fine-tuning |
 |:-:|:-:|
